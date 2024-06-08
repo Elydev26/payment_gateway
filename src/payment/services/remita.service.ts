@@ -23,77 +23,45 @@ export class PaymentService {
   ) {
   }
 
-  // async initiatePayment(userId: string, amount: number, transactionType: string): Promise<any> {
-  //   try {
-  //     const transactionReference = this.generateTransactionReference();
-  //     const log: TransactionLogDto = {
-  //       userId,
-  //       transactionReference,
-  //       amount,
-  //       status: 'INITIATED',
-  //       transactionType,
-  //     };
-  //     await this.transactionLogService.createLog(log);
-
-  //     const response = await axios.post(`${this.config.get<string>(EnvConfigEnum.REMITA_BASE_URL)}/initiate`, {
-  //       userId,
-  //       amount,
-  //       transactionReference,
-  //       apiKey: this.config.get<string>(EnvConfigEnum.REMITA_API_KEY),
-  //     });
-
-  //     if (response.data.success) {
-  //       // Send OTP
-  //       const otpResponse = await axios.post(`${this.config.get<string>(EnvConfigEnum.REMITA_BASE_URL)}/send-otp`, {
-  //         userId,
-  //         transactionReference,
-  //         apiKey: this.config.get<string>(EnvConfigEnum.REMITA_API_KEY),
-  //       });
-
-  //       if (otpResponse.data.success) {
-  //         return {
-  //           ...response.data,
-  //           transactionReference,
-  //           message: 'Payment initiated successfully. OTP sent.',
-  //         };
-  //       } else {
-  //         await this.transactionLogService.updateTransactionStatus(transactionReference, 'FAILED');
-  //         throw new HttpException('Failed to send OTP', HttpStatus.BAD_REQUEST);
-  //       }
-  //     } else {
-  //       await this.transactionLogService.updateTransactionStatus(transactionReference, 'FAILED');
-  //       throw new HttpException('Payment initiation failed', HttpStatus.BAD_REQUEST);
-  //     }
-  //   } catch (error) {
-  //     throw new HttpException(
-  //       error.response ? error.response.data : 'An error occurred',
-  //       error.response ? error.response.status : HttpStatus.INTERNAL_SERVER_ERROR,
-  //     );
-  //   }
-  // }
-
-  async initiatePayment(userId: string, amount: number): Promise<any> {
+  async initiatePayment(userId: string, amount: number, transactionType: string): Promise<any> {
     try {
+      const transactionReference = this.generateTransactionReference();
+      const log: TransactionLogDto = {
+        userId,
+        transactionReference,
+        amount,
+        status: 'INITIATED',
+        transactionType,
+      };
+      await this.transactionLogService.createLog(log);
+
       const response = await axios.post(`${this.config.get<string>(EnvConfigEnum.REMITA_BASE_URL)}/initiate`, {
         userId,
         amount,
-        // transactionReference,
+        transactionReference,
         apiKey: this.config.get<string>(EnvConfigEnum.REMITA_API_KEY),
       });
 
       if (response.data.success) {
-        const transactionId = response.data.transactionId;
-        const otpResponse = await this.sendOtp(userId, transactionId);
+        // Send OTP
+        const otpResponse = await axios.post(`${this.config.get<string>(EnvConfigEnum.REMITA_BASE_URL)}/send-otp`, {
+          userId,
+          transactionReference,
+          apiKey: this.config.get<string>(EnvConfigEnum.REMITA_API_KEY),
+        });
 
-        if (otpResponse.success) {
+        if (otpResponse.data.success) {
           return {
             ...response.data,
-            message: 'Payment initiated and OTP sent successfully',
+            transactionReference,
+            message: 'Payment initiated successfully. OTP sent.',
           };
         } else {
-          throw new HttpException('OTP sending failed', HttpStatus.BAD_REQUEST);
+          await this.transactionLogService.updateTransactionStatus(transactionReference, 'FAILED');
+          throw new HttpException('Failed to send OTP', HttpStatus.BAD_REQUEST);
         }
       } else {
+        await this.transactionLogService.updateTransactionStatus(transactionReference, 'FAILED');
         throw new HttpException('Payment initiation failed', HttpStatus.BAD_REQUEST);
       }
     } catch (error) {
@@ -102,16 +70,6 @@ export class PaymentService {
         error.response ? error.response.status : HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-  }
-
-  private async sendOtp(userId: string, transactionId: string): Promise<any> {
-        const otpResponse = await axios.post(`${this.config.get<string>(EnvConfigEnum.REMITA_BASE_URL)}/send-otp`, {
-          userId,
-          // transactionReference,
-          apiKey: this.config.get<string>(EnvConfigEnum.REMITA_API_KEY),
-        });
-
-    return otpResponse.data;
   }
   async verifyPayment(userId: string, transactionReference: string, otp: string): Promise<any> {
     try {
