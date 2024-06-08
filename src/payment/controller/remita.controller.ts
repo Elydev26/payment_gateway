@@ -12,8 +12,7 @@ export class PaymentController {
     @Body('transactionType') transactionType: string
   ) {
     try {
-      const result = await this.paymentService.initiatePayment(userId, amount
-        // transactionType
+      const result = await this.paymentService.initiatePayment(userId, amount,transactionType
       );
       return result;
     } catch (error) {
