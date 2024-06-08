@@ -14,7 +14,7 @@ export class Wallet {
   })
   user: string;
 
-  @Prop({default: generateRandomNumber(6)})
+  @Prop({default: generateRandomNumber(10)})
   accountNo: number;
 }
 
