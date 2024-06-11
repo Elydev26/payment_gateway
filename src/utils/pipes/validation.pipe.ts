@@ -7,7 +7,6 @@ import {
   StringSchema,
 } from 'joi';
 import { ObjectId } from 'mongodb';
-
 @Injectable()
 export class ObjectValidationPipe implements PipeTransform {
   constructor(private readonly schema: ObjectSchema) {}
@@ -22,7 +21,6 @@ export class ObjectValidationPipe implements PipeTransform {
     }
   }
 }
-
 @Injectable()
 export class ArrayValidationPipe implements PipeTransform {
   constructor(private readonly schema: ArraySchema) {}
@@ -38,7 +36,6 @@ export class ArrayValidationPipe implements PipeTransform {
     }
   }
 }
-
 @Injectable()
 export class StringValidationPipe implements PipeTransform {
   constructor(private readonly schema: StringSchema) {}
@@ -51,7 +48,6 @@ export class StringValidationPipe implements PipeTransform {
     }
   }
 }
-
 @Injectable()
 export class BooleanValidationPipe implements PipeTransform {
   constructor(private readonly schema: BooleanSchema) {}
@@ -64,7 +60,6 @@ export class BooleanValidationPipe implements PipeTransform {
     }
   }
 }
-
 @Injectable()
 export class NumberValidationPipe implements PipeTransform {
   constructor(private readonly schema: NumberSchema) {}
@@ -77,10 +72,8 @@ export class NumberValidationPipe implements PipeTransform {
     }
   }
 }
-
 @Injectable()
 export class ValidateId implements PipeTransform<string, ObjectId>{
-  
   transform(value: string): ObjectId {
     try {
       const newValue = new ObjectId(value);
