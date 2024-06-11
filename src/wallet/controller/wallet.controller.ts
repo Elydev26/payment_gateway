@@ -40,9 +40,7 @@ export class WalletController {
   ) {
     return this.walletService.updateBalance(userId, amount);
   }
-
   @Post(':userId/payment')
-  // @UsePipes(new ValidationPipe({ whitelist: true }))
   initiatePayment(
     @Param('userId') userId: string,
     @Body() initiatePaymentDto: InitiatePaymentDto,
@@ -55,7 +53,6 @@ export class WalletController {
   }
 
   @Post(':userId/verify-payment')
-  // @UsePipes(new ValidationPipe({ whitelist: true }))
   verifyPayment(
     @Param('userId') userId: string,
     @Body() verifyPaymentDto: VerifyPaymentDto,

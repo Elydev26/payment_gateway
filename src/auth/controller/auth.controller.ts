@@ -73,10 +73,10 @@ export class AuthController {
     createUserDto: CreateUserDto,
   ): Promise<ApiResponse<UserDoc>> {
     const response = await this.authService.userSignUp(createUserDto);
-    const createWalletPayload: CreateWalletDto = {
-      user: response.data.id,
-    };
-    this.evenEmitter.emit(EventEnum.CreateUserWalletEvent, createWalletPayload);
+    // const createWalletPayload: CreateWalletDto = {
+    //   user: response.data.id,
+    // };
+    // this.evenEmitter.emit(EventEnum.CreateUserWalletEvent, createWalletPayload);
     return response;
   }
 
