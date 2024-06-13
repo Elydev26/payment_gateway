@@ -15,6 +15,7 @@ import { AppController } from './controllers/app.controller';
 import { TransactionLogModule } from 'src/transactionlog/transactionlog.module';
 import { DeserializeAuthorizationToken } from 'src/utils/middlewares/token.middleware';
 import { TokenModule } from './token/token.module';
+import { LogisticModule } from 'src/logistic/logistic.module';
 
 
 @Module({
@@ -22,6 +23,7 @@ import { TokenModule } from './token/token.module';
     WalletModule,
     ShipmentModule,
     // NotificationModule,
+    LogisticModule,
     AuthModule,
     TokenModule,
     UserModule,
