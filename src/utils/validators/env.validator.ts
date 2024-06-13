@@ -22,4 +22,5 @@ export const envConfigValidator = Joi.object().keys({
   [EnvConfigEnum.REMITA_BASE_URL]: Joi.string().trim().required(),
   [EnvConfigEnum.REMITA_API_KEY]: Joi.string().trim().required(),
   [EnvConfigEnum.REMITA_SECRET_KEY]: Joi.string().trim().required(),
+  [EnvConfigEnum.GOOGLE_API_KEY]: Joi.string().trim().required(),
 });
